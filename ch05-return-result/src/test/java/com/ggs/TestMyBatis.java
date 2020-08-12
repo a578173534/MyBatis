@@ -1,13 +1,13 @@
 package com.ggs;
 
 import com.ggs.dao.StudentDao;
+import com.ggs.domain.MyStudent;
 import com.ggs.domain.Student;
 import com.ggs.utils.MyBatisUtils;
-import com.ggs.vo.QueryParam;
+import com.ggs.vo.ViewStudent;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,11 +32,36 @@ public class TestMyBatis {
     }
 
     @Test
-    public void testSelectMultiObject() {
+    public void testSelectViewStudent() {
         SqlSession sqlSession = MyBatisUtils.getSqlSession();
         StudentDao dao = sqlSession.getMapper(StudentDao.class);
-        QueryParam param = new QueryParam("张三", 28);
-        List<Student> students = dao.selectMultiObject(param);
+        ViewStudent student = dao.selectStudentReturnViewStudent(1005);
+        System.out.println("1005 student=" + student);
+    }
+
+    @Test
+    public void testSelectCount() {
+        SqlSession sqlSession = MyBatisUtils.getSqlSession();
+        StudentDao dao = sqlSession.getMapper(StudentDao.class);
+        int counts = dao.countStudent();
+        System.out.println("学生数量=" + counts);
+    }
+
+    // 返回Map
+    @Test
+    public void testSelectMap() {
+        SqlSession sqlSession = MyBatisUtils.getSqlSession();
+        StudentDao dao = sqlSession.getMapper(StudentDao.class);
+        Map<Object, Object> map = dao.selectMapById(1001);
+        System.out.println("map == " + map);
+    }
+
+    // ==================================
+    @Test
+    public void testSelectAllStudent() {
+        SqlSession sqlSession = MyBatisUtils.getSqlSession();
+        StudentDao dao = sqlSession.getMapper(StudentDao.class);
+        List<Student> students = dao.selectAllStudents();
         for (Student stu : students) {
             System.out.println("学生=" + stu);
         }
@@ -44,62 +69,51 @@ public class TestMyBatis {
     }
 
     @Test
-    public void testSelectMultiStudent() {
+    public void testSelectAllStudent2() {
         SqlSession sqlSession = MyBatisUtils.getSqlSession();
         StudentDao dao = sqlSession.getMapper(StudentDao.class);
-        Student student = new Student();
-        student.setName("张三");
-        student.setAge(28);
-        List<Student> students = dao.selectMultiStudent(student);
-        for (Student stu : students) {
+        List<MyStudent> students = dao.selectMyStudent();
+        for (MyStudent stu : students) {
             System.out.println("学生=" + stu);
         }
         sqlSession.close();
     }
 
     @Test
-    public void testSelectMultiPosition() {
+    public void testSelectDiffColProperty() {
         SqlSession sqlSession = MyBatisUtils.getSqlSession();
         StudentDao dao = sqlSession.getMapper(StudentDao.class);
-        List<Student> students = dao.selectMultiPosition("李四", 20);
-        for (Student stu : students) {
-            System.out.println("学生=" + stu);
+        List<MyStudent> students = dao.selectDiffColProperty();
+        for (MyStudent stu : students) {
+            System.out.println("##########学生=" + stu);
         }
         sqlSession.close();
     }
 
     @Test
-    public void testSelectMultiByMap() {
+    public void testSelectLikeOne() {
         SqlSession sqlSession = MyBatisUtils.getSqlSession();
         StudentDao dao = sqlSession.getMapper(StudentDao.class);
-        Map<String, Object> data = new HashMap<>();
-        data.put("myname", "张三");
-        data.put("age1", 28);
-        List<Student> students = dao.selectMultiByMap(data);
+
+        // 准备好like内容
+        String name = "%李%";
+        List<Student> students = dao.selectLikeOne(name);
         for (Student stu : students) {
-            System.out.println("学生=" + stu);
+            System.out.println("##########学生=" + stu);
         }
         sqlSession.close();
     }
 
     @Test
-    public void testSelectUse$() {
+    public void testSelectLikeTwo() {
         SqlSession sqlSession = MyBatisUtils.getSqlSession();
         StudentDao dao = sqlSession.getMapper(StudentDao.class);
-        List<Student> students = dao.selectUse$("'李四';select * from user");
-        for (Student stu : students) {
-            System.out.println("学生=" + stu);
-        }
-        sqlSession.close();
-    }
 
-    @Test
-    public void testSelectUse$Order() {
-        SqlSession sqlSession = MyBatisUtils.getSqlSession();
-        StudentDao dao = sqlSession.getMapper(StudentDao.class);
-        List<Student> students = dao.selectUse$Order("age");
+        // 准备好like内容
+        String name = "张";
+        List<Student> students = dao.selectLikeTwo(name);
         for (Student stu : students) {
-            System.out.println("学生=" + stu);
+            System.out.println("**********学生=" + stu);
         }
         sqlSession.close();
     }
