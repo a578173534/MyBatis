@@ -4,6 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 
+    <!-- 指定properties文件的位置，从类路径根开始找文件 -->
+    <properties resource="jdbc.properties"/>
+
     <!--settings：控制mybatis全局行为-->
     <settings>
         <!--设置mybatis输出日志-->
@@ -29,6 +32,11 @@
         <package name="com.ggs.vo"/>
     </typeAliases>
 
+    <!-- 配置插件 -->
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor"></plugin>
+    </plugins>
+
     <environments default="mydev">
         <environment id="mydev">
             <!--
@@ -50,19 +58,31 @@
             -->
             <dataSource type="POOLED">
                 <!--数据库的驱动类名-->
-                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="driver" value="${jdbc.driver}"/>
                 <!--连接数据库的url字符串-->
-                <property name="url" value="jdbc:mysql://localhost:3306/springdb"/>
+                <property name="url" value="${jdbc.url}"/>
                 <!--访问数据库的用户名-->
-                <property name="username" value="root"/>
+                <property name="username" value="${jdbc.user}"/>
                 <!--密码-->
-                <property name="password" value="a578173534"/>
+                <property name="password" value="${jdbc.passwd}"/>
             </dataSource>
         </environment>
     </environments>
 
     <!-- sql mapper(sql映射文件)的位置-->
     <mappers>
-        <mapper resource="com/ggs/dao/StudentDao.xml"/>
+        <!--第一种方式：指定多个mapper文件-->
+        <!--<mapper resource="com/ggs/dao/StudentDao.xml"/>
+        <mapper resource="com/ggs/dao/OrderDao.xml" />-->
+
+        <!--第二种方式： 使用包名
+            name: xml文件（mapper文件）所在的包名, 这个包中所有xml文件一次都能加载给mybatis
+            使用package的要求：
+             1. mapper文件名称需要和接口名称一样， 区分大小写的一样
+             2. mapper文件和dao接口需要在同一目录
+        -->
+        <package name="com.ggs.dao"/>
+        <!-- <package name="com.ggs.dao2"/>
+         <package name="com.ggs.dao3"/>-->
     </mappers>
 </configuration>

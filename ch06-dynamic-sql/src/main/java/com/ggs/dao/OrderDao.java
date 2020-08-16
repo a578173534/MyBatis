@@ -4,7 +4,7 @@ import com.ggs.domain.Student;
 
 import java.util.List;
 
-public interface StudentDao {
+public interface OrderDao {
 
     //动态sql ，使用java对象作为参数
     List<Student> selectStudentIf(Student student);
@@ -17,7 +17,4 @@ public interface StudentDao {
 
     //foreach 用法 2
     List<Student> selectForeachTwo(List<Student> stulist);
-
-    // 使用PageHelper分页数据
-    List<Student> selectAll();
 }

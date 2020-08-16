@@ -3,6 +3,7 @@ package com.ggs;
 import com.ggs.dao.StudentDao;
 import com.ggs.domain.Student;
 import com.ggs.utils.MyBatisUtils;
+import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
 
@@ -76,6 +77,22 @@ public class TestMyBatis {
         List<Student> students = dao.selectForeachTwo(stuList);
         for (Student stu : students) {
             System.out.println("foreach--two ===" + stu);
+        }
+    }
+
+    @Test
+    public void testSelectAllPageHelper() {
+        SqlSession sqlSession = MyBatisUtils.getSqlSession();
+        StudentDao dao = sqlSession.getMapper(StudentDao.class);
+
+        // 加入PageHelper的方法，分页
+        // pageNum：第几页，从1开始
+        // pageSize：一页中有多少行数据
+        PageHelper.startPage(3, 3);
+
+        List<Student> students = dao.selectAll();
+        for (Student stu : students) {
+            System.out.println("foreach--one ===" + stu);
         }
     }
 }
